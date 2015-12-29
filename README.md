@@ -6,8 +6,11 @@ It contains many tricks that i have learned over the last year. Key elements of 
 The following items should be installed in your system before starting work using this api
 
  .JDK 1.7
+
  .Maven 3
+
  .Tomcat 7
+
  .MySql 5
 
 # Database configuration
