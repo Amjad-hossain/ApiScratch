@@ -15,10 +15,8 @@ public class JerseyAppSetup extends ResourceConfig {
     public JerseyAppSetup() {
 
         packages("org.codehaven");
-//        register(RolesAllowedDynamicFeature.class);
         register(ResponseCorsFilter.class);
         register(LoggingFilter.class);
-              // Tracing support.
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
         property(ServerProperties.TRACING, TracingConfig.ALL.name());

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.codehaven.userapi.util.JsonDateDeserializer;
 import org.codehaven.userapi.util.JsonDateSerializer;
@@ -21,10 +22,13 @@ public class UserDto {
     @JsonIgnore
     private Long id ;
 
+    @ApiModelProperty(required = true)
     private String userName;
 
+    @ApiModelProperty(required = true)
     private String displayName;
 
+    @ApiModelProperty(required = true)
     private String timeZone;
 
     private boolean active;
@@ -37,6 +41,7 @@ public class UserDto {
 
     private String language;
 
+    @ApiModelProperty(required = true)
     private String email;
 
     private String contactNo;

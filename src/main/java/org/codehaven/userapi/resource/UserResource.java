@@ -79,13 +79,7 @@ public class UserResource {
             @ApiResponse(code = 204, message = "No Content")})
     public Response updateUser(@ApiParam(value = "User Id" , required = true)  @PathParam("userId") Long userId) throws Exception {
 
-        int noOfRow = userService.deleteUser(userId);
-        if(noOfRow > 0) {
-
-            return Response.status(Response.Status.OK).build();
-        }
-        return Response.status(Response.Status.NOT_FOUND).build();
+        userService.deleteUser(userId);
+        return Response.status(Response.Status.OK).build();
     }
-
-
 }

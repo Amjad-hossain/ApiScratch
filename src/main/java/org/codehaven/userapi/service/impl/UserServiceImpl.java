@@ -1,6 +1,6 @@
 package org.codehaven.userapi.service.impl;
 
-import org.codehaven.userapi.dao.UserDao;
+import org.codehaven.userapi.dao.Dao;
 import org.codehaven.userapi.dto.DtoTransformer;
 import org.codehaven.userapi.dto.UserDto;
 import org.codehaven.userapi.model.User;
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
@@ -23,8 +25,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    @Qualifier("UserDao")
-    private UserDao userDao;
+    @Qualifier("Dao")
+    private Dao dao;
 
     @Autowired
     private DtoTransformer transformer;
@@ -34,32 +36,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUserDtoList(Long id) {
 
-        List<User> users = userDao.getUserList(id);
-        logger.debug("--- users " + users);
-        return transformer.getUserDtoList(users);
+        TypedQuery<User> query= dao.createQuery(("FROM User u" + ((id != null && id > 0 )?  " WHERE u.id = :userId" : "")), User.class);
+        if(id != null && id > 0) {
+            query.setParameter("userId", id);
+        }
+        return transformer.getUserDtoList(query.getResultList());
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
 
         User user = transformer.getUser(userDto);
-        userDao.createUser(user);
-        return  transformer.getUserDto(user);
+        dao.persist(user);
+        return transformer.getUserDto(user);
     }
 
     @Override
     public void modifyUser(Long userId, UserDto userDto) {
 
-        List<User> users = userDao.getUserList(userId);
-        if(users != null && !users.isEmpty()) {
-            User exUser = users.get(0);
-            exUser.update(userDto);
-            userDao.modifyUser(exUser);
+        User user = dao.findById(User.class, userId);
+        if(user != null ) {
+            user.update(userDto);
+            dao.merge(user);
         }
     }
 
     @Override
-    public int deleteUser(Long userId) {
-        return userDao.deleteUser(userId);
+    public void deleteUser(Long userId) {
+        Query query = dao.createNamedQuery("User.deleteById").setParameter("userId", userId);
+        query.executeUpdate();
     }
 }
